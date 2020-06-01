@@ -1,15 +1,13 @@
-import React from 'react'
+import React from 'react';
 
 const Total = (props) => {
-    console.log(props)
-
     return (
-        <>
+        <div>
             <p>
                 <b>total of {props.parts.reduce((sum, part) => sum+part.exercises, 0)} exercises</b>
             </p>
-        </>
-    )
+        </div>
+    );
 }
   
-export default Total
+export default Total;

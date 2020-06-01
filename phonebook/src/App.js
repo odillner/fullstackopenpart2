@@ -12,6 +12,7 @@ const App = () => {
   const [numberInput, setNumberInput] = useState('');
   const [searchInput, setSearchInput] = useState('');
   const [message, setMessage] = useState(null);
+  const [messageType, setMessageType] = useState("notification");
 
   useEffect(() => {
     
@@ -39,7 +40,7 @@ const App = () => {
           setNameInput('');
           setNumberInput('');
 
-          displayMessage(`${newPerson.name} has been added`)
+          displayMessage(`${newPerson.name} has been added`, "notification")
         });
     }
   }
@@ -53,7 +54,7 @@ const App = () => {
           setNameInput('');
           setNumberInput('');
 
-          displayMessage(`${newPerson.name} has been updated`)
+          displayMessage(`${newPerson.name} has been updated`, "notification")
         });
     }
   }
@@ -76,24 +77,28 @@ const App = () => {
         personService
           .remove(person.id)
           .then(response => {
-            setPersons(persons.filter(p => p.id !== person.id));
+            displayMessage(`${person.name} has been deleted`, "notification")
+          })
+          .catch(error => {
+            displayMessage(`${person.name} has already been deleted`, "error")
+          });
 
-            displayMessage(`${person.name} has been deleted`)
-        });
+        setPersons(persons.filter(p => p.id !== person.id));
       }
     }
 
     return handler;
   }
 
-  const displayMessage = (message) => {
+  const displayMessage = (message, type) => {
     setMessage(message);
+    setMessageType(type);
     setTimeout(() => {setMessage(null)}, 5000)
   }
 
   return (
     <div>
-      <Notification message={message}/>
+      <Notification message={message} type={messageType}/>
       <h2>Phonebook</h2>
       <Forms.SearchForm
         searchForm={{searchInput, handleSearchForm}}

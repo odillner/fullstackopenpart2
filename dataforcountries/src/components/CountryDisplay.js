@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import WeatherService from '../services/weather';
+import WeatherDisplay from './WeatherDisplay';
 
 const ShowSuggestionButton = (props) => {
     return (
@@ -45,34 +45,10 @@ const SuggestionDisplay = (props) => {
     );
 }
 
-const WeatherDisplay = (props) => {
-    if (Object.entries(props.weather).length !== 0) {
-        return (
-            <div>
-                <h3>Weather in {props.weather.location.name}</h3>
-                <p><b>temperature:</b>{props.weather.current.temperature} Celcius</p>
-                <img width="100" height="100" src={props.weather.current.weather_icons[0]} alt="404"/>
-            </div>
-        )
-    } else {
-        return (
-            <div/>
-        )
-    }
-}
 
 const SingleCountryDisplay = (props) => {
     const country = props.country;
-    const [weather, setWeather] = useState({});
-    
-    useEffect(() => {
-        WeatherService
-            .getWeatherInCountry(country.name.toLowerCase())
-            .then(response => {
-                setWeather(response);
-            });
-    }, []);
-    
+
     return (
         <div className="SingleCountryDisplay">
             <h1>{country.name}</h1>
@@ -85,7 +61,7 @@ const SingleCountryDisplay = (props) => {
 
             <img width="300" height="200" src={country.flag} alt="404"/>
 
-            <WeatherDisplay weather={weather}/>
+            <WeatherDisplay country={country}/>
         </div>
     )
 }

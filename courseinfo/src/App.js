@@ -1,5 +1,8 @@
-import React from 'react'
-import Course from './components/Course'
+import React from 'react';
+import Content from './components/Content';
+import Header from './components/Header';
+import Total from './components/Total';
+
 
 const App = () => {
     const courses = [
@@ -45,13 +48,21 @@ const App = () => {
             }
           ]
         }
-      ]
+      ];
   
     return (
       <div>
-          {courses.map(course => <Course key={course.name} course={course} />)}
+          {courses
+            .map(course => 
+              <div>
+                <Header name={course.name}/>
+                <Content parts={course.parts}/>
+                <Total parts={course.parts}/>
+              </div>
+            )
+          }
       </div>
-    )
+    );
 }
 
-export default App
+export default App;

@@ -1,13 +1,11 @@
-import React from 'react'
+import React from 'react';
 
 const Content = (props) => {
-    console.log(props)
-
     return (
-      <>
+      <div>
         {props.parts.map(part => <p key={part.name}> {part.name} {part.exercises} </p>)}
-      </>
+      </div>
     )
 }
 
-export default Content
+export default Content;
