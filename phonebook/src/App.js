@@ -15,15 +15,17 @@ const App = () => {
   const [messageType, setMessageType] = useState("notification");
 
   useEffect(() => {
-    
-    personService
-      .getAll()
-      .then(response => {
-        setPersons(response);
-      });
-
+    getAllPersons()
   }, []);
 
+
+  const getAllPersons = () => {
+    personService
+    .getAll()
+    .then(response => {
+      setPersons(response);
+    });
+  }
   const addPerson = (event) => {
     event.preventDefault();
 
@@ -31,7 +33,7 @@ const App = () => {
     const foundPerson = persons.find(person => (person.name === newPerson.name));
 
     if (foundPerson) {
-      updatePerson(foundPerson.id, newPerson);
+      updatePerson(foundPerson._id, newPerson);
     } else {    
       personService
         .create(newPerson)
@@ -75,15 +77,14 @@ const App = () => {
     const handler = () => {
       if (window.confirm(`Delete ${person.name}?`)) {
         personService
-          .remove(person.id)
+          .remove(person._id)
           .then(response => {
             displayMessage(`${person.name} has been deleted`, "notification")
+            getAllPersons()
           })
           .catch(error => {
             displayMessage(`${person.name} has already been deleted`, "error")
           });
-
-        setPersons(persons.filter(p => p.id !== person.id));
       }
     }
 
