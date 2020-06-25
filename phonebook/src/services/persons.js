@@ -1,18 +1,18 @@
-import axios from 'axios';
-const baseUrl = "http://localhost:3001/api/persons/" //'/api/persons/';
+import axios from 'axios'
+const baseUrl = '/api/persons/'
 
 const getAll = async () => {
-    const res = await axios.get(baseUrl);
+    const res = await axios.get(baseUrl)
     return res.data;
 }
 
 const create = async (newObject) => {
-    const res = await axios.post(baseUrl, newObject);
+    const res = await axios.post(baseUrl, newObject)
     return res.data;
 }
 
 const remove = async (id) => {
-  const res = await axios.delete(baseUrl + id);
+  const res = await axios.delete(baseUrl + id)
   return res.data;
 }
 
