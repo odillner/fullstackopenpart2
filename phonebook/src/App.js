@@ -19,45 +19,56 @@ const App = () => {
   }, []);
 
 
-  const getAllPersons = () => {
-    personService
-    .getAll()
-    .then(response => {
-      setPersons(response);
-    });
+  const getAllPersons = async () => {
+    try {
+      const res = await personService.getAll()
+      setPersons(res)
+    } catch (err) {
+      displayError(`Could not fetch phonebook`)
+      console.log(err)
+    }
   }
-  const addPerson = (event) => {
+
+  const addPerson = async (event) => {
     event.preventDefault();
 
     const newPerson = {name: nameInput, number: numberInput};
     const foundPerson = persons.find(person => (person.name === newPerson.name));
 
     if (foundPerson) {
-      updatePerson(foundPerson._id, newPerson);
+      updatePerson(foundPerson.id, newPerson);
     } else {    
-      personService
-        .create(newPerson)
-        .then(response => {
-          setPersons(persons.concat(response))
-          setNameInput('');
-          setNumberInput('');
+      try {
+        const res = await personService.create(newPerson)
 
-          displayMessage(`${newPerson.name} has been added`, "notification")
-        });
+        setPersons(persons.concat(res))
+
+        displayMessage(`${newPerson.name} has been added`)
+      } catch (err) {
+        displayError(`Unable to add person, invalid input`)
+        console.log(err)
+      }
+
+      setNameInput('');
+      setNumberInput('');
     }
   }
 
-  const updatePerson = (id, newPerson) => {
+  const updatePerson = async (id, newPerson) => {
     if (window.confirm(`${newPerson.name} already exists, update with new number?`)) {
-      personService
-        .update(id, newPerson)
-        .then(response => {
-          setPersons(persons.filter(p => p.id !== id).concat(response));
-          setNameInput('');
-          setNumberInput('');
+      try {
+        const res = await personService.update(id, newPerson)
 
-          displayMessage(`${newPerson.name} has been updated`, "notification")
-        });
+        setPersons(persons.filter(p => p.id !== id).concat(res));
+
+        displayMessage(`${newPerson.name} has been updated`)
+      } catch (err) {
+        displayError(`Unable to update person, invalid input`)
+        console.log(err)
+      }
+
+      setNameInput('');
+      setNumberInput('');
     }
   }
 
@@ -74,26 +85,33 @@ const App = () => {
   }
 
   const handleRemoveButton = (person) => {
-    const handler = () => {
+    const handler = async () => {
       if (window.confirm(`Delete ${person.name}?`)) {
-        personService
-          .remove(person._id)
-          .then(response => {
-            displayMessage(`${person.name} has been deleted`, "notification")
-            getAllPersons()
-          })
-          .catch(error => {
-            displayMessage(`${person.name} has already been deleted`, "error")
-          });
+        try {
+          const res = await personService.remove(person.id)
+
+          displayMessage(`${person.name} has been deleted`)
+        } catch (err) {
+          displayError(`${person.name} has already been deleted`)
+          console.log(err)
+        }
+
+        setPersons(persons.filter(p => p.id !== person.id));
       }
     }
 
     return handler;
   }
 
-  const displayMessage = (message, type) => {
+  const displayMessage = (message) => {
     setMessage(message);
-    setMessageType(type);
+    setMessageType("notification");
+    setTimeout(() => {setMessage(null)}, 5000)
+  }
+
+  const displayError = (error) => {
+    setMessage(error);
+    setMessageType("error");
     setTimeout(() => {setMessage(null)}, 5000)
   }
 
